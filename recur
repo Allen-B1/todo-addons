@@ -23,6 +23,7 @@ while IFS="" read line; do
 
 	if [[ "$repeat" =~ "$day," ]] || [[ "$repeat" = "all" ]]; then
 		let "id+=1"
+		line+=" due:`date +%Y-%m-%d`"
 		echo "$line" >> "$TODO_FILE"
 		echo "$id" "$line"
 	fi
