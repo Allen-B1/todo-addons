@@ -3,6 +3,10 @@
 if [ "$1" = "usage" ]; then 
 	echo "    recur"
 	echo "      Reads tasks from recur.txt and adds it to the todo file."
+	echo "      "
+	echo "      Each task in recur.txt must have a repeat tag. The repeat tag can either be a list of 3-letter days of the week sepearted by commas, or the word 'all'"
+	echo "        repeat:all"
+	echo "        repeat:mon,thu,fri"
 	echo ""
 	exit
 fi
@@ -17,7 +21,7 @@ while IFS="" read line; do
 	repeat=`echo "$line" | grep -o "repeat:[montuewdhfrisa,]*"`
 	repeat="${repeat[@]:7},"
 
-	if [[ "$repeat" =~ "$day," ]]; then
+	if [[ "$repeat" =~ "$day," ]] || [[ "$repeat" = "all" ]]; then
 		let "id+=1"
 		echo "$line" >> "$TODO_FILE"
 		echo "$id" "$line"
