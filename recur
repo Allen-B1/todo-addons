@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ "$1" = "usage" ]; then 
+	echo "    recur"
+	echo "      Reads tasks from recur.txt and adds it to the todo file."
+	echo ""
+	exit
+fi
+
+days=(sun mon tue wed thu fri sat)
+day="${days[`date +%w`]}"
+
+origid=`cat $TODO_FILE | wc -l`
+id="$origid"
+
+while IFS="" read line; do 
+	repeat=`echo "$line" | grep -o "repeat:[montuewdhfrisa,]*"`
+	repeat="${repeat[@]:7},"
+
+	if [[ "$repeat" =~ "$day," ]]; then
+		let "id+=1"
+		echo "$line" >> "$TODO_FILE"
+		echo "$id" "$line"
+	fi
+done < "$TODO_DIR/recur.txt"
+
+echo -n "TODO: "
+let "origid+=1"
+
+if (("$origid" > "$id")); then
+	echo -n "Nothing "
+else
+	for i in `seq $origid $id`; do
+		echo -n "$i "
+	done
+fi
+echo "added."
